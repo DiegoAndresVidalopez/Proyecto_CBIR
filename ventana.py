@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QSlider, QVBoxLayout,QHBoxLayout, QGridLayout, QComboBox, QSplitter, QFrame, QSizePolicy,QFileDialog 
+from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QSlider, QVBoxLayout,QHBoxLayout, QGridLayout, QComboBox, QSplitter, QFrame, QSizePolicy,QFileDialog, QGroupBox
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 
@@ -28,6 +28,7 @@ class Ventana(QWidget):
         seccion_izquierda = QWidget()
         layout_izquierda = QVBoxLayout(seccion_izquierda)
         layout_izquierda.setAlignment(Qt.AlignmentFlag.AlignTop)
+        seccion_izquierda.setStyleSheet("background-color: #aed6f1")
         
         
 
@@ -38,28 +39,30 @@ class Ventana(QWidget):
         pixmap = pixmap.scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio)  # Escalar la imagen manteniendo la proporción
         self.imagen_label.setPixmap(pixmap)
         self.imagen_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.imagen_label.setStyleSheet("margin-top:40%; margin-bottom:20%")
-
+        self.imagen_label.setStyleSheet("margin-top:40%; margin-bottom:20%;")
+       
         # Botón para subir imagen
         btn_subir_imagen = QPushButton("Subir imagen")
         btn_subir_imagen.clicked.connect(self.subir_imagen)  # Conectar el botón a la función para subir imagen
-        btn_subir_imagen.setStyleSheet("background-color: red; color: white; border-radius:5px; padding-top:10px; padding-bottom:10px; font-weight:bold; cursor:pointer")
+        btn_subir_imagen.setStyleSheet("background-color: red; color: white; border-radius:5px; padding-top:10px; padding-bottom:10px; font-weight:bold; cursor:pointer;")
 
         # Slider para cantidad de imágenes similares
         slider_label = QLabel("Cantidad imágenes similares", self)
-
         self.slider = QSlider(Qt.Orientation.Horizontal)
         self.slider.setMinimum(0)
         self.slider.setMaximum(2)
         self.slider.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.slider.setTickInterval(1)
-        slider_label.setStyleSheet("margin-top:30%;")
+        slider_label.setStyleSheet("background-color: #85c1e9; margin-top:30%;")
+       
+
+        
 
         # Conectar el slider a la función que actualiza el valor
         #self.slider.valueChanged.connect(self.actualizar_valor_slider)
 
         # QLabel para mostrar el valor actual del slider
-        self.valor_slider_label = QLabel("2", self)
+        self.valor_slider_label = QLabel("1", self)
 
         # Conectar el slider a la función que actualiza el valor
         self.slider.valueChanged.connect(self.actualizar_valor_slider)
@@ -69,11 +72,12 @@ class Ventana(QWidget):
         layout_slider.addWidget(slider_label)
         layout_slider.addWidget(self.slider)
         layout_slider.addWidget(self.valor_slider_label)
+   
 
          # Botón para subir imagen
         btn_procesar = QPushButton("Procesar")
         btn_procesar.clicked.connect(self.procesar_imagenes)  # Conectar el botón a la función procesar
-        btn_procesar.setStyleSheet("background-color: lightblue; color: black; border-radius:5px; padding-top:10px; padding-bottom:10px; font-weight:bold; cursor:pointer")
+        btn_procesar.setStyleSheet("background-color: #7fb3d5; color: black; border-radius:5px; padding-top:10px; padding-bottom:10px; font-weight:bold; cursor:pointer")
 
         # Añadir widgets a la sección izquierda
         layout_izquierda.addWidget(self.imagen_label)
@@ -92,11 +96,12 @@ class Ventana(QWidget):
         # Sección central: resultados de clasificación
         self.seccion_central = QWidget()
         self.layout_central = QVBoxLayout(self.seccion_central)
+        self.seccion_central.setStyleSheet("background-color: #7fb3d5")
 
         # Título
         self.titulo_resultados = QLabel("RESULTADOS CLASIFICACIÓN")
         self.titulo_resultados.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.titulo_resultados.setStyleSheet("margin-bottom:20%; magin-top:30%; font-weight:bold;")
+        self.titulo_resultados.setStyleSheet("margin-bottom:20%; magin-top:30%; font-weight:bold; font-zise: 20px; background-color: #2e86c1")
 
         # Crear grid layout para las clases
         self.grid_layout = QGridLayout()
@@ -122,7 +127,7 @@ class Ventana(QWidget):
                     self.grid_layout.addWidget(imagen_clase, i * 2, j)  # La imagen se pone en la fila "i*2"
 
                     # Añadir el texto debajo de cada imagen
-                    texto_clase = QLabel("hola", self)
+                    texto_clase = QLabel("Clase", self)
                     texto_clase.setAlignment(Qt.AlignmentFlag.AlignCenter)
                     self.grid_layout.addWidget(texto_clase, i * 2 + 1, j)  # El texto va en la fila siguiente a la imagen
                     self.grid_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -143,6 +148,7 @@ class Ventana(QWidget):
         # Sección derecha: evaluación del usuario
         seccion_derecha = QWidget()
         layout_derecha = QVBoxLayout(seccion_derecha)
+        seccion_derecha.setStyleSheet("background-color: #aed6f1")
 
         # Título evaluación
         titulo_evaluacion = QLabel("EVALUACIÓN DEL USUARIO")
@@ -151,7 +157,8 @@ class Ventana(QWidget):
 
         # Combobox para evaluación del usuario
         combo_evaluacion = QComboBox()
-        combo_evaluacion.addItems(["Seleccione una opción", "Correcto", "Incorrecto"])
+        combo_evaluacion.addItems(["Seleccione una opción", "Metalico", "Organico", "Papel", "Plastico", "Vidrio"])
+        combo_evaluacion.setStyleSheet("background-color: #d4e6f1")
 
         # Añadir todo al layout derecho
         layout_derecha.addWidget(titulo_evaluacion)
