@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QSlider, QVBoxLayout,QHBoxLayout, QGridLayout, QComboBox, QSplitter, QFrame, QSizePolicy,QFileDialog, QGroupBox
+from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QSlider, QVBoxLayout,QHBoxLayout, QGridLayout, QComboBox, QSplitter, QFrame, QSizePolicy,QFileDialog, QGroupBox, QMessageBox
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 
@@ -12,6 +12,25 @@ class Ventana(QWidget):
     def __init__(self):
         super().__init__()
         self.inicializarUI()
+
+    def subir_imagen(self):
+        # Abrir un cuadro de diálogo para seleccionar una imagen
+        file_dialog = QFileDialog()
+        archivo_imagen, _ = file_dialog.getOpenFileName(None, "Seleccionar Imagen", "", "Imágenes (*.png *.jpg *.jpeg *.bmp)")
+        
+        if archivo_imagen:
+            try:
+                # Llama a la función insert_image de la base de datos
+                categoria = ""  
+                vector_caracteristicas = ""  
+                # Se llama a la función insert_image
+                self.db.insert_image(archivo_imagen, vector_caracteristicas, categoria)
+
+                # Mensaje de éxito
+                QMessageBox.information(None, "Éxito", "La imagen se ha subido correctamente.", QMessageBox.Ok)
+            except Exception as e:
+                # Mostrar un mensaje de error si algo falla
+                QMessageBox.critical(None, "Error", f" al subir la imagen: {str(e)}", QMessageBox.Ok)
 
     def inicializarUI(self):
 
@@ -35,16 +54,19 @@ class Ventana(QWidget):
         # QLabel para la imagen subida
         # Reemplazo de QLabel para la imagen subida por una imagen personalizada
         self.imagen_label = QLabel(self)
-        pixmap = QPixmap("carton.jpg")  # Reemplaza con la ruta de tu imagen
+        pixmap = QPixmap("Proyecto_CBIR/imagenes_residuos/")  # Reemplaza con la ruta de tu imagen
         pixmap = pixmap.scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio)  # Escalar la imagen manteniendo la proporción
         self.imagen_label.setPixmap(pixmap)
         self.imagen_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.imagen_label.setStyleSheet("margin-top:40%; margin-bottom:20%;")
        
         # Botón para subir imagen
+        self.db = ConnectDatabase()
         btn_subir_imagen = QPushButton("Subir imagen")
         btn_subir_imagen.clicked.connect(self.subir_imagen)  # Conectar el botón a la función para subir imagen
         btn_subir_imagen.setStyleSheet("background-color: red; color: white; border-radius:5px; padding-top:10px; padding-bottom:10px; font-weight:bold; cursor:pointer;")
+        
+        
 
         # Slider para cantidad de imágenes similares
         slider_label = QLabel("Cantidad imágenes similares", self)
@@ -55,8 +77,6 @@ class Ventana(QWidget):
         self.slider.setTickInterval(1)
         slider_label.setStyleSheet("background-color: #85c1e9; margin-top:30%;")
        
-
-        
 
         # Conectar el slider a la función que actualiza el valor
         #self.slider.valueChanged.connect(self.actualizar_valor_slider)

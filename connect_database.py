@@ -28,21 +28,30 @@ class ConnectDatabase:
         #iniciamos la coneccion con la base de datos
         self.connect_db()
 
+        # Lee la imagen y la convierte a formato binario
+        try:
+            with open(imagenSRC, 'rb') as file:
+                imagen_binaria = file.read()
+        except Exception as e:
+            return f"Error al leer la imagen: {e}"
+
         #construimos la consulta con los parametros pasados en la funcion
         sql = f"""
                 INSERT INTO imagenes (imagen,vector_caracteristicas,categoria_id)
-                VALUES ('{imagenSRC}','{vectorCaracteristicas}',{categoria});
+                VALUES (%s, %s, %s);
         """
 
         try:
             #ejecuta el query para agregar la informacion 
-            self.cursor.execute(sql)
+            # Ejecuta la consulta, pasando los parámetros de manera segura para evitar inyecciones SQL
+            self.cursor.execute(sql, (imagen_binaria, vectorCaracteristicas, categoria))
             self.con.commit()
+            return "Imagen subida correctamente."
         
         except Exception as E:
             #se hace un rollback en caso de que alla un error
             self.con.rollback()
-            return E
+            return f"Error al insertar la imagen en la base de datos: {E}"
         
         finally:
             #cerramos la coneccion
